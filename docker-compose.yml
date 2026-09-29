@@ -39,6 +39,20 @@ services:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9091:9090"
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: sim-grafana
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./monitoring/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3001:3000"
 
 volumes:
   pgdata:
+  grafana-data:
