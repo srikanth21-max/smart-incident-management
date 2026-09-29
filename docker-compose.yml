@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: sim-postgres
+    environment:
+      POSTGRES_DB: smart_ims
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d smart_ims"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: sim-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/smart_ims
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+    ports:
+      - "8081:8080"
+
+volumes:
+  pgdata:
