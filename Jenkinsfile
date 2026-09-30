@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
     environment {
         DOCKERHUB_USER = 'srikanth7349'
         BACKEND_IMAGE  = "${DOCKERHUB_USER}/sim-backend"
